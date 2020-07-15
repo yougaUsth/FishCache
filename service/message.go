@@ -14,6 +14,18 @@ type Message struct {
 	erasureCode uint32
 }
 
+
+func NewMessage(msgID int32, data []byte) *Message {
+	msg := &Message{
+		msgSize: int32(len(data)) + 4 + 4,
+		msgID:   msgID,
+		data:    data,
+	}
+	msg.erasureCode = msg.CalculateErasureCode()
+	return msg
+}
+
+
 func (m *Message) CalculateErasureCode() uint32 {
 	if m == nil {
 		return 0
