@@ -28,23 +28,23 @@ func (s *Status) del(k string, v []byte) {
 	s.ValueSize -= int64(len(v))
 }
 
-type inMemoryCache struct {
+type InMemoryCache struct {
 	c map[string] []byte
 	mutex sync.RWMutex
 	Status
 }
 
-func NewInMemoryCache () *inMemoryCache {
-	return &inMemoryCache{make(map[string][]byte), sync.RWMutex{}, Status{}}
+func NewInMemoryCache () *InMemoryCache {
+	return &InMemoryCache{make(map[string][]byte), sync.RWMutex{}, Status{}}
 }
 
-func (c *inMemoryCache) Get(k string) ([]byte, error) {
+func (c *InMemoryCache) Get(k string) ([]byte, error) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	return c.c[k], nil
 }
 
-func (c *inMemoryCache) Set(k string, v []byte) error{
+func (c *InMemoryCache) Set(k string, v []byte) error{
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	_, exist := c.c[k]
@@ -56,6 +56,6 @@ func (c *inMemoryCache) Set(k string, v []byte) error{
 	return nil
 }
 
-func (c *inMemoryCache) GetStatus() Status {
+func (c *InMemoryCache) GetStatus() Status {
 	return c.Status
 }

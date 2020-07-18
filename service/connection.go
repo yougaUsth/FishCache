@@ -120,7 +120,7 @@ func (c *Conn) write (ctx context.Context) {
 			}
 		case <- c.hbTimer.C:
 			hbMessage := NewMessage(MsgHeartbeat, hbData)
-			c.SendMessage(hbMessage)
+			_ = c.SendMessage(hbMessage)
 			// 设置心跳timer
 			if c.hbInterval > 0 {
 				c.hbTimer.Reset(c.hbInterval)

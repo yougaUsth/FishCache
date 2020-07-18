@@ -1,11 +1,13 @@
 package service
 
 import (
-	"net"
-	"sync"
-	"time"
+	"FishCache/cache"
 	"context"
 	"errors"
+	"net"
+	"strings"
+	"sync"
+	"time"
 )
 
 const (
@@ -32,6 +34,10 @@ type SocketService struct {
 	status       int
 	listener     net.Listener
 	stopCh       chan error
+
+	// local memory
+	localCache  *cache.InMemoryCache
+
 }
 
 // Create a new socket service
@@ -53,10 +59,11 @@ func NewSocketService(addr string) (*SocketService, error) {
 
 }
 
+// TODO : 使用hook在相应消息的过程中略显冗余
 // RegMessageHandler register message handler
-func (s *SocketService) RegMessageHandler(handler func(*Session, *Message)) {
-	s.onMessage = handler
-}
+//func (s *SocketService) RegMessageHandler(handler func(*Session, *Message, *cache.InMemoryCache)) {
+//	s.onMessage = handler
+//}
 
 // RegConnectHandler register connect handler
 func (s *SocketService) RegConnectHandler(handler func(*Session)) {
@@ -107,26 +114,14 @@ func (s *SocketService) connectHandler (ctx context.Context, c net.Conn) {
 				s.onDisconnect(session, err)
 			}
 			return
+		// Deal message
 		case msg := <- conn.messageCh:
-			if s.onMessage != nil {
-				s.onMessage(session, msg)
-			}
+			commandString := string(msg.GetData())
+			strings.Split(commandString, " ")
 
+			}
 		}
 	}
-
-}
-
-
-func (s *SocketService) StartServer() {
-	s.status = STRunning
-	ctx , cancel := context.WithCancel(context.Background())
-	defer func() {
-		s.status = STStop
-		cancel()
-		s.listener.Close()
-	}()
-	ctx.Done()
 
 }
 
@@ -139,7 +134,7 @@ func (s *SocketService) Serv() {
 	defer func() {
 		s.status = STStop
 		cancel()
-		s.listener.Close()
+		_ = s.listener.Close()
 	}()
 
 	go s.acceptHandler(ctx)

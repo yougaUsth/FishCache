@@ -26,7 +26,11 @@ func NewMessage(msgID int32, data []byte) *Message {
 }
 
 
-func (m *Message) CalculateErasureCode() uint32 {
+func (m *Message) GetData() []byte {
+	return m.data
+}
+
+	func (m *Message) CalculateErasureCode() uint32 {
 	if m == nil {
 		return 0
 	}
