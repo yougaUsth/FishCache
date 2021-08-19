@@ -10,7 +10,7 @@ type Session struct {
 }
 
 func NewSession(conn *Conn) *Session {
-	id, _ := uuid.NewV4()
+	id := uuid.NewV4()
 	session := &Session{
 		sID:      id.String(),
 		uID:      "",

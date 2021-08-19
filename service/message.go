@@ -3,8 +3,8 @@ package service
 import (
 	"bytes"
 	"encoding/binary"
-	"hash/adler32"
 	"errors"
+	"hash/adler32"
 )
 
 type Message struct {
@@ -30,7 +30,7 @@ func (m *Message) GetData() []byte {
 	return m.data
 }
 
-	func (m *Message) CalculateErasureCode() uint32 {
+func (m *Message) CalculateErasureCode() uint32 {
 	if m == nil {
 		return 0
 	}

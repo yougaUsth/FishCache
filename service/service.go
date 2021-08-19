@@ -36,7 +36,7 @@ type SocketService struct {
 	stopCh       chan error
 
 	// local memory
-	localCache  *cache.InMemoryCache
+	localCache  *cache.SCache
 
 }
 
@@ -61,7 +61,7 @@ func NewSocketService(addr string) (*SocketService, error) {
 
 // TODO : 使用hook在相应消息的过程中略显冗余
 // RegMessageHandler register message handler
-//func (s *SocketService) RegMessageHandler(handler func(*Session, *Message, *cache.InMemoryCache)) {
+//func (s *SocketService) RegMessageHandler(handler func(*Session, *Message, *cache.SCache)) {
 //	s.onMessage = handler
 //}
 
@@ -123,7 +123,6 @@ func (s *SocketService) connectHandler (ctx context.Context, c net.Conn) {
 		}
 	}
 
-}
 
 // Serv Start socket service
 func (s *SocketService) Serv() {
